@@ -92,6 +92,33 @@ class TestBorrowingModels(unittest.TestCase):
         with self.assertRaises(ValueError):
             Administrator("AD001", "Admin User", "admin@example.com", "")
 
+    # Item validation tests
+
+    def test_item_rejects_empty_id(self):
+        with self.assertRaises(ValueError):
+            Item("", "Laptop", "HP laptop",
+                 ItemCategory.ELECTRONICS, self.student)
+
+    def test_item_rejects_empty_name(self):
+        with self.assertRaises(ValueError):
+            Item("IT001", "", "HP laptop",
+                 ItemCategory.ELECTRONICS, self.student)
+
+    def test_item_rejects_empty_description(self):
+        with self.assertRaises(ValueError):
+            Item("IT001", "Laptop", "",
+                 ItemCategory.ELECTRONICS, self.student)
+
+    def test_item_rejects_invalid_category(self):
+        with self.assertRaises(ValueError):
+            Item("IT001", "Laptop", "HP laptop",
+                 "Electronics", self.student)
+
+    def test_item_rejects_invalid_owner(self):
+        with self.assertRaises(ValueError):
+            Item("IT001", "Laptop", "HP laptop",
+                 ItemCategory.ELECTRONICS, "John")
+
 
 if __name__ == "__main__":
     unittest.main()

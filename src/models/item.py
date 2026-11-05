@@ -1,9 +1,27 @@
+
 from src.models.item_category import ItemCategory
 from src.models.item_status import ItemStatus
+from src.models.person import Person
 
 
 class Item:
     def __init__(self, item_id, name, description, category, owner):
+
+        if not isinstance(item_id, str) or not item_id.strip():
+            raise ValueError("Item ID cannot be empty.")
+
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("Item name cannot be empty.")
+
+        if not isinstance(description, str) or not description.strip():
+            raise ValueError("Item description cannot be empty.")
+
+        if not isinstance(category, ItemCategory):
+            raise ValueError("Invalid item category.")
+
+        if not isinstance(owner, Person):
+            raise ValueError("Owner must be a valid person.")
+
         self.__item_id = item_id
         self.__name = name
         self.__description = description
@@ -50,3 +68,4 @@ class Item:
             f"Owner: {self.__owner.full_name}\n"
             f"Status: {self.__status.value}"
         )
+
