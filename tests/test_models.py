@@ -50,7 +50,10 @@ class TestBorrowingModels(unittest.TestCase):
         )
         record.mark_as_returned()
         self.assertIsNotNone(record.return_date)
-
+    def test_person_is_abstract(self):
+        with self.assertRaises(TypeError):
+            Person("P001", "Test Person", "test@example.com")
+    
 
 if __name__ == "__main__":
     unittest.main()
