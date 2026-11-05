@@ -1,3 +1,4 @@
+
 import unittest
 from datetime import datetime, timedelta
 
@@ -50,10 +51,27 @@ class TestBorrowingModels(unittest.TestCase):
         )
         record.mark_as_returned()
         self.assertIsNotNone(record.return_date)
+
     def test_person_is_abstract(self):
         with self.assertRaises(TypeError):
             Person("P001", "Test Person", "test@example.com")
-    
+
+    def test_student_rejects_empty_student_id(self):
+        with self.assertRaises(ValueError):
+            Student("", "John Doe", "john@example.com", "Hostel A")
+
+    def test_student_rejects_empty_name(self):
+        with self.assertRaises(ValueError):
+            Student("ST001", "", "john@example.com", "Hostel A")
+
+    def test_student_rejects_invalid_email(self):
+        with self.assertRaises(ValueError):
+            Student("ST001", "John Doe", "invalid-email", "Hostel A")
+
+    def test_student_rejects_empty_hostel(self):
+        with self.assertRaises(ValueError):
+            Student("ST001", "John Doe", "john@example.com", "")
+
 
 if __name__ == "__main__":
     unittest.main()
