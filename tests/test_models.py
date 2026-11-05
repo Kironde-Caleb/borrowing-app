@@ -56,6 +56,8 @@ class TestBorrowingModels(unittest.TestCase):
         with self.assertRaises(TypeError):
             Person("P001", "Test Person", "test@example.com")
 
+    # Student validation tests
+
     def test_student_rejects_empty_student_id(self):
         with self.assertRaises(ValueError):
             Student("", "John Doe", "john@example.com", "Hostel A")
@@ -71,6 +73,24 @@ class TestBorrowingModels(unittest.TestCase):
     def test_student_rejects_empty_hostel(self):
         with self.assertRaises(ValueError):
             Student("ST001", "John Doe", "john@example.com", "")
+
+    # Administrator validation tests
+
+    def test_administrator_rejects_empty_id(self):
+        with self.assertRaises(ValueError):
+            Administrator("", "Admin User", "admin@example.com", "Manager")
+
+    def test_administrator_rejects_empty_name(self):
+        with self.assertRaises(ValueError):
+            Administrator("AD001", "", "admin@example.com", "Manager")
+
+    def test_administrator_rejects_invalid_email(self):
+        with self.assertRaises(ValueError):
+            Administrator("AD001", "Admin User", "invalid-email", "Manager")
+
+    def test_administrator_rejects_empty_role(self):
+        with self.assertRaises(ValueError):
+            Administrator("AD001", "Admin User", "admin@example.com", "")
 
 
 if __name__ == "__main__":
