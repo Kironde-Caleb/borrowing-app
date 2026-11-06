@@ -118,7 +118,8 @@ class TestBorrowingModels(unittest.TestCase):
         with self.assertRaises(ValueError):
             Item("IT001", "Laptop", "HP laptop",
                  ItemCategory.ELECTRONICS, "John")
-        # BorrowRequest validation tests
+
+    # BorrowRequest validation tests
 
     def test_borrow_request_rejects_empty_id(self):
         with self.assertRaises(ValueError):
@@ -135,6 +136,38 @@ class TestBorrowingModels(unittest.TestCase):
     def test_borrow_request_rejects_invalid_id_type(self):
         with self.assertRaises(ValueError):
             BorrowRequest(123, self.item, self.student)
+
+    # BorrowRequest status transition tests
+
+    def test_pending_request_can_be_approved(self):
+        request = BorrowRequest("BR004", self.item, self.student)
+        request.update_status(RequestStatus.APPROVED)
+        self.assertEqual(request.status, RequestStatus.APPROVED)
+
+    def test_pending_request_can_be_rejected(self):
+        request = BorrowRequest("BR005", self.item, self.student)
+        request.update_status(RequestStatus.REJECTED)
+        self.assertEqual(request.status, RequestStatus.REJECTED)
+
+    def test_approved_request_can_be_returned(self):
+        request = BorrowRequest("BR006", self.item, self.student)
+        request.update_status(RequestStatus.APPROVED)
+        request.update_status(RequestStatus.RETURNED)
+        self.assertEqual(request.status, RequestStatus.RETURNED)
+
+    def test_rejected_request_cannot_be_approved(self):
+        request = BorrowRequest("BR007", self.item, self.student)
+        request.update_status(RequestStatus.REJECTED)
+
+        with self.assertRaises(ValueError):
+            request.update_status(RequestStatus.APPROVED)
+
+    def test_cancelled_request_cannot_be_approved(self):
+        request = BorrowRequest("BR008", self.item, self.student)
+        request.update_status(RequestStatus.CANCELLED)
+
+        with self.assertRaises(ValueError):
+            request.update_status(RequestStatus.APPROVED)
 
 
 if __name__ == "__main__":

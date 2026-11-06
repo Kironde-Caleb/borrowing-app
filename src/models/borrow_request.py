@@ -1,3 +1,4 @@
+
 from datetime import datetime
 
 from src.models.request_status import RequestStatus
@@ -44,10 +45,30 @@ class BorrowRequest:
         return self.__request_date
 
     def update_status(self, new_status):
-        if isinstance(new_status, RequestStatus):
-            self.__status = new_status
-        else:
+        allowed_transitions = {
+            RequestStatus.PENDING: [
+                RequestStatus.APPROVED,
+                RequestStatus.REJECTED,
+                RequestStatus.CANCELLED
+            ],
+            RequestStatus.APPROVED: [
+                RequestStatus.RETURNED
+            ],
+            RequestStatus.REJECTED: [],
+            RequestStatus.CANCELLED: [],
+            RequestStatus.RETURNED: []
+        }
+
+        if not isinstance(new_status, RequestStatus):
             raise ValueError("Invalid request status.")
+
+        if new_status not in allowed_transitions[self.__status]:
+            raise ValueError(
+                f"Cannot change status from "
+                f"{self.__status.value} to {new_status.value}."
+            )
+
+        self.__status = new_status
 
     def display_request(self):
         return (
