@@ -1,8 +1,20 @@
 from datetime import datetime
 
+from src.models.borrow_request import BorrowRequest
+
 
 class BorrowRecord:
     def __init__(self, record_id, borrow_request, due_date):
+
+        if not isinstance(record_id, str) or not record_id.strip():
+            raise ValueError("Record ID cannot be empty.")
+
+        if not isinstance(borrow_request, BorrowRequest):
+            raise ValueError("A valid borrow request is required.")
+
+        if not isinstance(due_date, datetime):
+            raise ValueError("Due date must be a valid date and time.")
+
         self.__record_id = record_id
         self.__borrow_request = borrow_request
         self.__borrow_date = datetime.now()

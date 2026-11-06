@@ -52,6 +52,28 @@ class TestBorrowingModels(unittest.TestCase):
         record.mark_as_returned()
         self.assertIsNotNone(record.return_date)
 
+    # BorrowRecord validation tests
+
+    def test_borrow_record_rejects_empty_id(self):
+        request = BorrowRequest("BR009", self.item, self.student)
+
+        with self.assertRaises(ValueError):
+            BorrowRecord("", request, datetime.now() + timedelta(days=7))
+
+    def test_borrow_record_rejects_invalid_request(self):
+        with self.assertRaises(ValueError):
+            BorrowRecord(
+                "REC002",
+                "Invalid request",
+                datetime.now() + timedelta(days=7)
+            )
+
+    def test_borrow_record_rejects_invalid_due_date(self):
+        request = BorrowRequest("BR010", self.item, self.student)
+
+        with self.assertRaises(ValueError):
+            BorrowRecord("REC003", request, "Next week")
+
     def test_person_is_abstract(self):
         with self.assertRaises(TypeError):
             Person("P001", "Test Person", "test@example.com")
