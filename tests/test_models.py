@@ -118,6 +118,23 @@ class TestBorrowingModels(unittest.TestCase):
         with self.assertRaises(ValueError):
             Item("IT001", "Laptop", "HP laptop",
                  ItemCategory.ELECTRONICS, "John")
+        # BorrowRequest validation tests
+
+    def test_borrow_request_rejects_empty_id(self):
+        with self.assertRaises(ValueError):
+            BorrowRequest("", self.item, self.student)
+
+    def test_borrow_request_rejects_invalid_item(self):
+        with self.assertRaises(ValueError):
+            BorrowRequest("BR003", "Laptop", self.student)
+
+    def test_borrow_request_rejects_invalid_borrower(self):
+        with self.assertRaises(ValueError):
+            BorrowRequest("BR003", self.item, "John")
+
+    def test_borrow_request_rejects_invalid_id_type(self):
+        with self.assertRaises(ValueError):
+            BorrowRequest(123, self.item, self.student)
 
 
 if __name__ == "__main__":

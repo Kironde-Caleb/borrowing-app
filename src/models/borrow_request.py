@@ -1,9 +1,22 @@
 from datetime import datetime
+
 from src.models.request_status import RequestStatus
+from src.models.item import Item
+from src.models.person import Person
 
 
 class BorrowRequest:
     def __init__(self, request_id, item, borrower):
+
+        if not isinstance(request_id, str) or not request_id.strip():
+            raise ValueError("Request ID cannot be empty.")
+
+        if not isinstance(item, Item):
+            raise ValueError("Item must be a valid item.")
+
+        if not isinstance(borrower, Person):
+            raise ValueError("Borrower must be a valid person.")
+
         self.__request_id = request_id
         self.__item = item
         self.__borrower = borrower
