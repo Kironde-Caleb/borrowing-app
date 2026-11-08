@@ -84,6 +84,30 @@ class BorrowingService:
         record.borrow_request.item.update_status(ItemStatus.AVAILABLE)
         return record
 
+    def get_pending_requests(self):
+        pending = []
+
+        for request in self.__requests:
+            if request.status == RequestStatus.PENDING:
+                pending.append(request)
+
+        return pending
+
+    def get_all_requests(self):
+        return list(self.__requests)
+
+    def get_all_records(self):
+        return list(self.__records)
+
+    def get_active_records(self):
+        active = []
+
+        for record in self.__records:
+            if record.return_date is None:
+                active.append(record)
+
+        return active
+
     def __find_request(self, request_id):
         for request in self.__requests:
             if request.request_id == request_id:
