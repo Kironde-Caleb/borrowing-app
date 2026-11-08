@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from src.models.administrator import Administrator
 from src.models.borrow_record import BorrowRecord
 from src.models.borrow_request import BorrowRequest
@@ -75,12 +76,27 @@ class BorrowingService:
         request.update_status(RequestStatus.REJECTED)
         return request
 
+    def return_item(self, record_id):
+        record = self.__find_record(record_id)
+
+        record.mark_as_returned()
+        record.borrow_request.update_status(RequestStatus.RETURNED)
+        record.borrow_request.item.update_status(ItemStatus.AVAILABLE)
+        return record
+
     def __find_request(self, request_id):
         for request in self.__requests:
             if request.request_id == request_id:
                 return request
 
         raise ValueError("Borrow request not found.")
+
+    def __find_record(self, record_id):
+        for record in self.__records:
+            if record.record_id == record_id:
+                return record
+
+        raise ValueError("Borrow record not found.")
 
     def __check_approver(self, request, approver):
         if not isinstance(approver, Person):

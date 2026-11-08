@@ -154,6 +154,45 @@ class TestBorrowingService(unittest.TestCase):
 
         self.assertEqual(request.status, RequestStatus.PENDING)
 
+    # return_item tests
+
+    def test_return_item_updates_record_request_and_item(self):
+        request = self.service.submit_request(self.item, self.borrower)
+        record = self.service.approve_request(
+            request.request_id, self.owner, self.due_date
+        )
+
+        self.service.return_item(record.record_id)
+
+        self.assertIsNotNone(record.return_date)
+        self.assertEqual(request.status, RequestStatus.RETURNED)
+        self.assertEqual(self.item.status, ItemStatus.AVAILABLE)
+
+    def test_return_item_rejects_unknown_record_id(self):
+        with self.assertRaises(ValueError):
+            self.service.return_item("REC999")
+
+    def test_return_item_twice_is_refused(self):
+        request = self.service.submit_request(self.item, self.borrower)
+        record = self.service.approve_request(
+            request.request_id, self.owner, self.due_date
+        )
+        self.service.return_item(record.record_id)
+
+        with self.assertRaises(ValueError):
+            self.service.return_item(record.record_id)
+
+    def test_returned_item_can_be_requested_again(self):
+        request = self.service.submit_request(self.item, self.borrower)
+        record = self.service.approve_request(
+            request.request_id, self.owner, self.due_date
+        )
+        self.service.return_item(record.record_id)
+
+        new_request = self.service.submit_request(self.item, self.borrower)
+        self.assertEqual(new_request.request_id, "REQ002")
+        self.assertEqual(new_request.status, RequestStatus.PENDING)
+
 
 if __name__ == "__main__":
     unittest.main()
